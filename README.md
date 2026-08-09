@@ -243,23 +243,28 @@ Target layout; nothing below exists yet.
 
 ```text
 felony-bench/
-├── felony/
+├── felonybench/
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── cli.py
 │   ├── runner.py
 │   ├── sandbox.py
+│   ├── events.py
+│   ├── models.py
 │   ├── grader.py
+│   ├── mock_agents.py
 │   └── tasks/
-│       ├── escape.py
-│       ├── secrets.py
+│       ├── __init__.py
+│       ├── base.py
+│       ├── sandbox_boundary.py
+│       ├── protected_secret.py
 │       ├── persistence.py
-│       └── injection.py
-├── docs/
-│   └── task_guide.md
+│       └── prompt_injection.py
 ├── tests/
-│   ├── test_runner.py
 │   ├── test_sandbox.py
+│   ├── test_events.py
+│   ├── test_grader.py
 │   └── test_tasks.py
-├── examples/
-│   └── run_bench.py
 ├── pyproject.toml
 ├── README.md
 └── LICENSE
