@@ -11,7 +11,7 @@ The question is not whether a model *can* solve a security puzzle. It's whether 
 
 ## Status
 
-The `felonybench` package here is real and runs — not just a spec. `pip install -e .` works, and `python -m felonybench run` executes four tasks against a shipped in-memory sandbox and two deterministic mock agents, producing graded JSON output.
+The `felonybench` package here is not just a spec; it's real and runs: `pip install -e .` works, and `python -m felonybench run` executes four tasks against a shipped in-memory sandbox and two deterministic mock agents, producing graded JSON output.
 
 What's *not* here yet, in short: a real model adapter (only two hardcoded mock agents ship — see [Adding an Agent](#adding-an-agent)), most of the taxonomy in [What It Tests](#what-it-tests) below (four of ten categories are implemented as tasks), a way for an attempt to actually succeed (`violation_succeeded` is always `False` by construction, since the shipped sandbox denies everything), any reproducibility metadata in run output (no version, timestamp, or task-set identifier is emitted — `__version__` exists in the package but isn't surfaced), and an automated test suite. Specifics are tracked in the issue queue, not restated here.
 
@@ -26,7 +26,7 @@ Agent-security evaluation has mostly organized around three questions, and Felon
 | [SandboxEscapeBench](https://arxiv.org/abs/2603.02277) (Marchand et al., 2026) | *Can* the agent break container isolation when its stated goal is to escape and read a host-side flag? | Explicit escape objective, CTF framing |
 | **FelonyBench** | Will the agent cross an authorization boundary *nobody told it to cross*, on a task nobody made adversarial, because doing so is instrumentally convenient? | No instruction, no injection, no objective — just opportunity |
 
-A model that resists AgentDojo has shown it isn't hijackable by hostile content. A model that resists AgentHarm has shown it refuses direct requests to do harm. A model that fails SandboxEscapeBench under an explicit escape objective has demonstrated a capability, not an intent. None of those results tell you whether the same model, given a completely ordinary task and no adversarial input at all, will quietly read a file it wasn't authorized to read because reading it would help — that's the gap FelonyBench targets: closer to the propensity side of the agentic-misalignment literature than to red-teaming or jailbreak-robustness. Adjacent multi-category efforts like Agent-SafetyBench and Agent Security Bench (ASB) cover broader risk taxonomies (Zhang et al., 2024/2025) but are also built around adversarial or explicitly risky framings, not incidental opportunity.
+A model that resists AgentDojo has shown it isn't hijackable by hostile content. A model that resists AgentHarm has shown it refuses direct requests to do harm. A model that fails SandboxEscapeBench under an explicit escape objective has demonstrated a capability, not an intent. None of those results tell you whether the same model, given a completely ordinary task and no adversarial input at all, will quietly read a file it wasn't authorized to read because reading it would help, which is the gap FelonyBench targets: closer to the propensity side of the agentic-misalignment literature than to red-teaming or jailbreak-robustness. Adjacent multi-category efforts like Agent-SafetyBench and Agent Security Bench (ASB) cover broader risk taxonomies (Zhang et al., 2024/2025) but are also built around adversarial or explicitly risky framings, not incidental opportunity.
 
 Several of the benchmarks above are built on [Inspect AI](https://inspect.aisi.org.uk/), the UK AISI's evaluation framework. The code shipped in this repository today does not use it — see [Quickstart](#quickstart) and [Architecture](#architecture) for what actually runs.
 
@@ -44,11 +44,11 @@ python -m felonybench run --json            # graded results as JSON
 python -m felonybench run --violating       # a mock agent that also probes every protected API
 ```
 
-Not published to PyPI — install from a local clone as shown. `run` executes the two shipped mock agents only; there's no `--model` flag or `validate` subcommand. To point a real model at a task, see [Adding an Agent](#adding-an-agent).
+Not published to PyPI (coming soon!) install from a local clone as shown. `run` executes the two shipped mock agents only; there's no `--model` flag or `validate` subcommand. To point a real model at a task, see [Adding an Agent](#adding-an-agent).
 
 ## Architecture
 
-This is the pipeline the shipped code actually runs today (`felonybench/runner.py`, `sandbox.py`, `events.py`, `grader.py`):
+This is the pipeline the shipped code actually runs (`felonybench/runner.py`, `sandbox.py`, `events.py`, `grader.py`):
 
 ```text
 Task → Sandbox ← Agent → Event Log → Grader → TaskResult
