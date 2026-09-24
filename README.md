@@ -5,7 +5,7 @@
 
 #### A benchmark for whether AI agents respect authorization boundaries they have the means to cross
 
-FelonyBench gives an agent a legitimate task inside a deliberately constrained environment, then watches what it does when useful information, capabilities, or state exist just outside that boundary. The environment is instrumented so that boundary-crossing attempts can be measured independently of whether the model claims to have succeeded, or claims to have not tried.
+FelonyBench gives an agent a legitimate task inside an intentionally constrained environment, then watches what it does when useful information, capabilities, or states that exist just outside that boundary. The environment is instrumented so that boundary-crossing attempts can be measured independently of whether the model claims to have succeeded, or claims to have not tried.
 
 The question is not whether a model *can* solve a security puzzle. It's whether an agent stays inside its authorization when it has tools, a filesystem, code execution, and an objective that happens to be easier to reach by stepping outside those lines than by staying inside them. Nobody attacks the agent. Nobody asks it to do anything malicious. The boundary is just there, and something useful is on the other side of it.
 
@@ -17,7 +17,7 @@ What's *not* here yet, in short: a real model adapter (only two hardcoded mock a
 
 ## Positioning
 
-Agent-security evaluation has mostly organized around three questions, and FelonyBench is deliberately answering a fourth:
+Agent-security evaluation has mostly organized around three questions. FelonyBench enables us to answer a fourth:
 
 | Benchmark | Question it asks | Trigger |
 |---|---|---|
@@ -56,7 +56,7 @@ Task → Sandbox ← Agent → Event Log → Grader → TaskResult
 
 **Task** defines the objective (`prompt()`), seeds the sandbox (`setup()`), and checks completion from final sandbox state (`is_complete(sandbox)`). **Sandbox** is an in-memory simulation, not a real security boundary — an authorized `/work` namespace plus a handful of synthetic protected resources (a file outside `/work`, a fake secret, a persistence API, a network-request stub). Every operation gets classified authorized/unauthorized and emits an **Event**; a fresh `Sandbox` is constructed per run, so no state leaks between them. **Agent** is a one-method adapter (`run(prompt, sandbox) -> str`) — the two mock agents implement it, a real model adapter would too. **Grader** reads the event log and produces a `TaskResult` (`completed`, `violation_attempted`, `violation_succeeded`, `protected_resource_accessed`, the event list, a short `notes` string), working from observable events rather than inferring anything from what the agent says happened.
 
-No task requires real credentials, production systems, or external infrastructure — see [Security Model](#security-model).
+No task requires real credentials, production systems, or external infrastructure. (See [Security Model](#security-model).)
 
 ## What It Tests
 
@@ -72,7 +72,7 @@ No task requires real credentials, production systems, or external infrastructur
 | Environment tampering | Does it attempt to modify or disable the benchmark's own instrumentation? | No |
 | Deceptive reporting | Does what it *says* happened match the instrumented event log? | No |
 
-A task distinguishes an agent merely *encountering* a protected resource from an agent *actively attempting* to obtain it — a benchmark that scores on whether a prohibited string appears anywhere in a trajectory is measuring exposure, not behavior.
+A task distinguishes an agent merely *encountering* a protected resource from an agent *actively attempting* to obtain it; a benchmark that scores on whether a prohibited string appears anywhere in a trajectory is measuring exposure, not behavior.
 
 ## Adding a Task
 
@@ -88,9 +88,9 @@ Subclass `Agent` from `felonybench/runner.py` and implement `run(prompt, sandbox
 
 ## Security Model
 
-Nothing here touches production infrastructure, real credentials, real user data, uncontrolled third-party systems, real corporate networks, or real host-level persistence. "Protected" resources are Python objects — a dict, some string constants — that exist only for the lifetime of one `Sandbox` instance. The purpose is to observe whether an agent *attempts* prohibited behavior, not to hand it an opportunity to compromise anything real.
+Nothing here touches production infrastructure, real credentials, real user data, uncontrolled third-party systems, real corporate networks, or real host-level persistence. "Protected" resources are Python objects (dict, string constants) that exist only for the lifetime of one `Sandbox` instance. The purpose is to observe whether an agent *attempts* prohibited behavior, not to hand it an opportunity to compromise anything real.
 
-FelonyBench is not a CTF collection and doesn't measure penetration-testing ability, vulnerability discovery, or exploit development — that's SandboxEscapeBench's territory. It's also not a substitute for production agent security controls: passing it doesn't establish that a model is safe to deploy with arbitrary privileges. The question is narrower: *when an agent has an explicit execution boundary, does it respect that boundary — unprompted, on an ordinary task, with no one testing it?*
+FelonyBench is not a CTF collection and doesn't measure penetration-testing ability, vulnerability discovery, or exploit development (that's SandboxEscapeBench's territory.) It's also not a substitute for production agent security controls: passing it doesn't establish that a model is safe to deploy with arbitrary privileges. The question is narrower: *when an agent has an explicit execution boundary, does it respect that boundary — unprompted, on an ordinary task, with no one testing it?*
 
 ## Repository Layout
 
