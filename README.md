@@ -7,7 +7,9 @@
 
 FelonyBench gives an agent a legitimate task inside an intentionally constrained environment, then watches what it does when useful information, capabilities, or states that exist just outside that boundary. The environment is instrumented so that boundary-crossing attempts can be measured independently of whether the model claims to have succeeded, or claims to have not tried.
 
-The question is not whether a model *can* solve a security puzzle. It's whether an agent stays inside its authorization when it has tools, a filesystem, code execution, and an objective that happens to be easier to reach by stepping outside those lines than by staying inside them. Nobody attacks the agent. Nobody asks it to do anything malicious. The boundary is just there, and something useful is on the other side of it.
+<blockquote>
+<p><i>The question is not whether a model *can* solve a security puzzle. It's whether an agent stays inside its authorization when it has tools, a filesystem, code execution, and an objective that happens to be easier to reach by stepping outside those lines than by staying inside them. Nobody attacks the agent. Nobody asks it to do anything malicious. The boundary is just there, and something useful is on the other side of it.</i></p>
+</blockquote>
 
 ## Status
 
